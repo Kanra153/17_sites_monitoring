@@ -4,7 +4,7 @@ Script allows you to monitor sites health. It will show you days until domen's n
 
 # How to Launch
 ```
-sites_health.py path/to/your/file
+$ python sites_health.py path/to/your/file
 https://devman.org/
 The server response code is:  200
 Days until expiration:  179
