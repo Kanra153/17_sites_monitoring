@@ -6,7 +6,7 @@ import requests
 
 
 def load_urls4check(path):
-    if not os.path.exists(file_path):
+    if not os.path.exists(path):
         return None
     with open(path, 'r', encoding='utf-8') as file_handler:
         urls = file_handler.read().split()
@@ -14,15 +14,15 @@ def load_urls4check(path):
 
 
 def is_server_respond_with_200(url):
-    r = requests.get(url)
-    return(r.status_code)
+    response = requests.get(url)
+    return response.status_code
 
 
 def get_domain_expiration_date(url):
     try:
-        return(whois.whois(url)['expiration_date'][0])
+        return whois.whois(url)['expiration_date'][0]
     except TypeError:
-        return(whois.whois(url)['expiration_date'])
+        return whois.whois(url)['expiration_date']
 
 
 if __name__ == '__main__':
