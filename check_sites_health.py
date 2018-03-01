@@ -19,10 +19,10 @@ def is_server_respond_with_200(url):
 
 
 def get_domain_expiration_date(url):
-        try:
-            return(whois.whois(url)['expiration_date'][0])
-        except  TypeError:
-            return(whois.whois(url)['expiration_date'])
+    try:
+        return(whois.whois(url)['expiration_date'][0])
+    except TypeError:
+        return(whois.whois(url)['expiration_date'])
 
 
 if __name__ == '__main__':
@@ -38,4 +38,3 @@ if __name__ == '__main__':
         days_until_expiration = get_domain_expiration_date(url)-now
         print('Days until expiration: ',
               days_until_expiration.days, '\n')
-        
