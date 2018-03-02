@@ -15,14 +15,24 @@ def load_urls4check(path):
 
 def is_server_respond_with_200(url):
     response = requests.get(url)
-    return response.status_code
+    status_code = response.status_code
+    return True if status_code == 200 else False
 
 
 def get_domain_expiration_date(url):
-    try:
+    if isinstance(whois.whois(url)['expiration_date'], list):
         return whois.whois(url)['expiration_date'][0]
-    except TypeError:
-        return whois.whois(url)['expiration_date']
+    return whois.whois(url)['expiration_date']
+
+
+def output_results_to_console(urls, now):
+    for url in urls:
+        print(url)
+        print('Is server respond with 200?: ',
+              is_server_respond_with_200(url))
+        days_until_expiration = get_domain_expiration_date(url)-now
+        print('Days until expiration: ',
+              days_until_expiration.days, '\n')
 
 
 if __name__ == '__main__':
@@ -31,10 +41,4 @@ if __name__ == '__main__':
     path = sys.argv[1]
     urls = load_urls4check(path)
     now = datetime.datetime.now()
-    for url in urls:
-        print(url)
-        print('The server response code is: ', 
-              is_server_respond_with_200(url))
-        days_until_expiration = get_domain_expiration_date(url)-now
-        print('Days until expiration: ',
-              days_until_expiration.days, '\n')
+    output_results_to_console(urls, now)
