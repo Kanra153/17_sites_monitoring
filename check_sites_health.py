@@ -25,12 +25,13 @@ def get_domain_expiration_date(url):
     return whois.whois(url)['expiration_date']
 
 
-def output_results_to_console(urls, now):
-    for url in urls:
-        print(url)
-        print('Is server respond with 200?: ',
-              is_server_respond_with_200(url))
-        days_until_expiration = get_domain_expiration_date(url)-now
+def output_results_to_console(server_answer, date, now):
+    print(url)
+    print('Is server respond with 200?: ', server_answer)
+    if date == None:
+        print('Expiration date is not stated', '\n')
+    else:
+        days_until_expiration = date-now
         print('Days until expiration: ',
               days_until_expiration.days, '\n')
 
@@ -41,4 +42,10 @@ if __name__ == '__main__':
     path = sys.argv[1]
     urls = load_urls4check(path)
     now = datetime.datetime.now()
-    output_results_to_console(urls, now)
+    for url in urls:
+        output_results_to_console(
+            is_server_respond_with_200(url),
+            get_domain_expiration_date(url),
+            now
+        )
+
