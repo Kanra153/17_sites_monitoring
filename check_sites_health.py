@@ -16,36 +16,47 @@ def load_urls4check(path):
 def is_server_respond_with_200(url):
     response = requests.get(url)
     status_code = response.status_code
-    return True if status_code == 200 else False
+    if response.status_code == requests.codes.ok:
+        return True if status_code == 200 else False
+    else:
+        return None
 
 
 def get_domain_expiration_date(url):
-    if isinstance(whois.whois(url)['expiration_date'], list):
-        return whois.whois(url)['expiration_date'][0]
-    return whois.whois(url)['expiration_date']
+    date = whois.whois(url)['expiration_date']
+    if isinstance(date, list):
+        return date[0]
+    return date
 
 
-def output_results_to_console(server_answer, date, now):
+def is_domen_name_paid(date, now):
+    days_until_expiration = date-now
+    if (days_until_expiration.days > 28):
+        date_answer = True
+    else:
+        date_answer = False
+    return date_answer
+
+
+def output_results_to_console(server_answer, date_answer):
     print(url)
     print('Is server respond with 200?: ', server_answer)
     if date == None:
         print('Expiration date is not stated', '\n')
     else:
-        days_until_expiration = date-now
-        print('Days until expiration: ',
-              days_until_expiration.days, '\n')
+        print('Is domen name paid for a next month?: ',
+              date_answer, '\n')
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        sys.exit('File is not found!')
+        sys.exit('Input filepath!')
     path = sys.argv[1]
     urls = load_urls4check(path)
     now = datetime.datetime.now()
     for url in urls:
+        date = get_domain_expiration_date(url)
         output_results_to_console(
             is_server_respond_with_200(url),
-            get_domain_expiration_date(url),
-            now
+            is_domen_name_paid(date, now)
         )
-
