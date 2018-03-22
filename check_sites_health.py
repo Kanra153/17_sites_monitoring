@@ -13,29 +13,21 @@ def load_urls4check(path):
     return urls
 
 
-def is_server_respond_with_200(url):
+def is_server_respond_ok(url):
     response = requests.get(url)
-    status_code = response.status_code
-    if response.status_code == requests.codes.ok:
-        return True if status_code == 200 else False
-    else:
-        return None
+    return response.status_code == requests.codes.ok
 
 
 def get_domain_expiration_date(url):
-    date = whois.whois(url)['expiration_date']
-    if isinstance(date, list):
-        return date[0]
-    return date
+    expiration_date = whois.whois(url)['expiration_date']
+    if isinstance(expiration_date, list):
+        return expiration_date[0]
+    return expiration_date
 
 
-def is_domen_name_paid(date, now):
-    days_until_expiration = date-now
-    if (days_until_expiration.days > 28):
-        date_answer = True
-    else:
-        date_answer = False
-    return date_answer
+def is_domen_name_paid(expiration_date, now, days_in_month = 28):
+    days_until_expiration = expiration_date-now
+    return days_until_expiration.days > days_in_month
 
 
 def output_results_to_console(server_answer, date_answer):
@@ -53,10 +45,10 @@ if __name__ == '__main__':
         sys.exit('Input filepath!')
     path = sys.argv[1]
     urls = load_urls4check(path)
-    now = datetime.datetime.now()
+    now = datetime.datetime.today()
     for url in urls:
         date = get_domain_expiration_date(url)
         output_results_to_console(
-            is_server_respond_with_200(url),
+            is_server_respond_ok(url),
             is_domen_name_paid(date, now)
         )
