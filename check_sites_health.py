@@ -15,7 +15,7 @@ def load_urls4check(path):
 
 def is_server_respond_ok(url):
     response = requests.get(url)
-    return requests.codes.ok == 200
+    return response.ok
 
 
 def get_domain_expiration_date(url):
@@ -28,15 +28,14 @@ def get_domain_expiration_date(url):
 def is_domen_name_paid(expiration_date, now, days_in_month = 28):
     try:
         days_until_expiration = expiration_date-now
-        return days_until_expiration.days > days_in_month
     except TypeError:
-        return False
+        return None
+    return days_until_expiration.days > days_in_month
 
-
-def output_results_to_console(server_answer, date_answer):
+def output_results_to_console(server_answer, whois_answer):
     print(url)
     print('Is server respond with 200?: ', server_answer)
-    print('Is domen name paid for a next month?: ', date_answer, '\n')
+    print('Is domen name paid for a next month?: ', whois_answer, '\n')
 
 
 if __name__ == '__main__':
@@ -51,3 +50,4 @@ if __name__ == '__main__':
             is_server_respond_ok(url),
             is_domen_name_paid(date, now)
         )
+
